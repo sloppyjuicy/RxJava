@@ -110,7 +110,7 @@ import io.reactivex.rxjava3.schedulers.*;
  * @since 2.0
  * @see io.reactivex.rxjava3.observers.DisposableMaybeObserver
  */
-public abstract class Maybe<T> implements MaybeSource<T> {
+public abstract class Maybe<@NonNull T> implements MaybeSource<T> {
 
     /**
      * Runs multiple {@link MaybeSource}s provided by an {@link Iterable} sequence and
@@ -889,7 +889,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Maybe<T> defer(@NonNull Supplier<? extends MaybeSource<? extends T>> supplier) {
+    public static <@NonNull T> Maybe<T> defer(@NonNull Supplier<? extends @NonNull MaybeSource<? extends T>> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new MaybeDefer<>(supplier));
     }
@@ -961,7 +961,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Maybe<T> error(@NonNull Supplier<? extends Throwable> supplier) {
+    public static <@NonNull T> Maybe<T> error(@NonNull Supplier<? extends @NonNull Throwable> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new MaybeErrorCallable<>(supplier));
     }
@@ -1079,7 +1079,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Maybe<T> fromCallable(@NonNull Callable<? extends T> callable) {
+    public static <T> Maybe<@NonNull T> fromCallable(@NonNull Callable<? extends @Nullable T> callable) {
         Objects.requireNonNull(callable, "callable is null");
         return RxJavaPlugins.onAssembly(new MaybeFromCallable<>(callable));
     }
@@ -1109,6 +1109,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
      * @return the new {@code Maybe} instance
      * @throws NullPointerException if {@code future} is {@code null}
      * @see <a href="http://reactivex.io/documentation/operators/from.html">ReactiveX operators documentation: From</a>
+     * @see #fromCompletionStage(CompletionStage)
      */
     @CheckReturnValue
     @NonNull
@@ -1147,6 +1148,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
      * @return the new {@code Maybe} instance
      * @throws NullPointerException if {@code future} or {@code unit} is {@code null}
      * @see <a href="http://reactivex.io/documentation/operators/from.html">ReactiveX operators documentation: From</a>
+     * @see #fromCompletionStage(CompletionStage)
      */
     @CheckReturnValue
     @NonNull
@@ -1285,7 +1287,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Maybe<T> fromSupplier(@NonNull Supplier<? extends T> supplier) {
+    public static <T> Maybe<@NonNull T> fromSupplier(@NonNull Supplier<? extends @Nullable T> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new MaybeFromSupplier<>(supplier));
     }
@@ -6145,7 +6147,7 @@ public abstract class Maybe<T> implements MaybeSource<T> {
      * <img width="640" height="262" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/fromCompletionStage.s.png" alt="">
      * <p>
      * Note that the operator takes an already instantiated, running or terminated {@code CompletionStage}.
-     * If the optional is to be created per consumer upon subscription, use {@link #defer(Supplier)}
+     * If the {@code CompletionStage} is to be created per consumer upon subscription, use {@link #defer(Supplier)}
      * around {@code fromCompletionStage}:
      * <pre><code>
      * Maybe.defer(() -&gt; Maybe.fromCompletionStage(createCompletionStage()));

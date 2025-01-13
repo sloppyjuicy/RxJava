@@ -24,7 +24,7 @@ import org.junit.rules.TestName;
 import org.reactivestreams.*;
 
 import io.reactivex.rxjava3.core.*;
-import io.reactivex.rxjava3.exceptions.MissingBackpressureException;
+import io.reactivex.rxjava3.exceptions.QueueOverflowException;
 import io.reactivex.rxjava3.functions.*;
 import io.reactivex.rxjava3.internal.subscriptions.SubscriptionHelper;
 import io.reactivex.rxjava3.internal.util.BackpressureHelper;
@@ -132,7 +132,7 @@ public class FlowableBackpressureTests extends RxJavaTest {
         assertEquals(num, ts.values().size());
         // either one can starve the other, but neither should be capable of doing more than 5 batches (taking 4.1)
         // TODO is it possible to make this deterministic rather than one possibly starving the other?
-        // benjchristensen => In general I'd say it's not worth trying to make it so, as "fair" algoritms generally take a performance hit
+        // benjchristensen => In general I'd say it's not worth trying to make it so, as "fair" algorithms generally take a performance hit
         assertTrue(c1.get() < Flowable.bufferSize() * 5);
         assertTrue(c2.get() < Flowable.bufferSize() * 5);
     }
@@ -154,7 +154,7 @@ public class FlowableBackpressureTests extends RxJavaTest {
         assertEquals(num, ts.values().size());
         // either one can starve the other, but neither should be capable of doing more than 5 batches (taking 4.1)
         // TODO is it possible to make this deterministic rather than one possibly starving the other?
-        // benjchristensen => In general I'd say it's not worth trying to make it so, as "fair" algoritms generally take a performance hit
+        // benjchristensen => In general I'd say it's not worth trying to make it so, as "fair" algorithms generally take a performance hit
         int max = Flowable.bufferSize() * 7;
         assertTrue("" + c1.get() + " >= " + max, c1.get() < max);
         assertTrue("" + c2.get() + " >= " + max, c2.get() < max);
@@ -206,7 +206,7 @@ public class FlowableBackpressureTests extends RxJavaTest {
         assertEquals(num, ts.values().size());
         // either one can starve the other, but neither should be capable of doing more than 5 batches (taking 4.1)
         // TODO is it possible to make this deterministic rather than one possibly starving the other?
-        // benjchristensen => In general I'd say it's not worth trying to make it so, as "fair" algoritms generally take a performance hit
+        // benjchristensen => In general I'd say it's not worth trying to make it so, as "fair" algorithms generally take a performance hit
         // akarnokd => run this in a loop over 10k times and never saw values get as high as 7*SIZE, but since observeOn delays the unsubscription non-deterministically, the test will remain unreliable
         assertTrue(c1.get() < Flowable.bufferSize() * 7);
         assertTrue(c2.get() < Flowable.bufferSize() * 7);
@@ -475,7 +475,7 @@ public class FlowableBackpressureTests extends RxJavaTest {
         int vc = ts.values().size();
         assertTrue("10 < " + vc, vc <= 10);
 
-        ts.assertError(MissingBackpressureException.class);
+        ts.assertError(QueueOverflowException.class);
     }
 
     @Test

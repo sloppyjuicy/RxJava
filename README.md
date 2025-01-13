@@ -3,6 +3,8 @@
 <a href='https://github.com/ReactiveX/RxJava/actions?query=workflow%3ASnapshot'><img src='https://github.com/ReactiveX/RxJava/workflows/Snapshot/badge.svg'></a>
 [![codecov.io](http://codecov.io/github/ReactiveX/RxJava/coverage.svg?branch=3.x)](https://codecov.io/gh/ReactiveX/RxJava/branch/3.x)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.reactivex.rxjava3/rxjava/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.reactivex.rxjava3/rxjava)
+[![Contribute with Gitpod](https://img.shields.io/badge/Contribute%20with-Gitpod-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/ReactiveX/RxJava)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ReactiveX/RxJava/badge)](https://securityscorecards.dev/viewer/?uri=github.com/ReactiveX/RxJava)
 
 RxJava is a Java VM implementation of [Reactive Extensions](http://reactivex.io): a library for composing asynchronous and event-based programs by using observable sequences.
 
@@ -10,16 +12,19 @@ It extends the [observer pattern](http://en.wikipedia.org/wiki/Observer_pattern)
 
 #### Version 3.x ([Javadoc](http://reactivex.io/RxJava/3.x/javadoc/))
 
-- single dependency: [Reactive-Streams](https://github.com/reactive-streams/reactive-streams-jvm)  
-- Java 8+ or Android API 21+ required
-- Java 8 lambda-friendly API
-- [Android](https://github.com/ReactiveX/RxAndroid) desugar friendly
-- fixed API mistakes and many limits of RxJava 2
-- intended to be a replacement for RxJava 2 with relatively few binary incompatible changes
-- non-opinionated about the source of concurrency (threads, pools, event loops, fibers, actors, etc.)
-- async or synchronous execution
-- virtual time and schedulers for parameterized concurrency
-- test and diagnostic support via test schedulers, test consumers and plugin hooks
+- Single dependency: [Reactive-Streams](https://github.com/reactive-streams/reactive-streams-jvm).
+- Java 8+ or Android API 21+ required.
+- Java 8 lambda-friendly API.
+- [Android](https://github.com/ReactiveX/RxAndroid) desugar friendly.
+- Fixed API mistakes and many limits of RxJava 2.
+- Intended to be a replacement for RxJava 2 with relatively few binary incompatible changes.
+- Non-opinionated about the source of concurrency (threads, pools, event loops, fibers, actors, etc.).
+- Async or synchronous execution.
+- Virtual time and schedulers for parameterized concurrency.
+- Test and diagnostic support via test schedulers, test consumers and plugin hooks.
+- Interop with newer JDK versions via 3rd party libraries, such as
+  - [Java 9 Flow API](https://github.com/akarnokd/RxJavaJdk9Interop#rxjavajdk9interop)
+  - [Java 21 Virtual Threads](https://github.com/akarnokd/RxJavaFiberInterop#rxjavafiberinterop)
 
 Learn more about RxJava in general on the <a href="https://github.com/ReactiveX/RxJava/wiki">Wiki Home</a>.
 
@@ -196,7 +201,7 @@ RxJava operators don't work with `Thread`s or `ExecutorService`s directly but wi
 - `Schedulers.single()`: Run work on a single thread in a sequential and FIFO manner.
 - `Schedulers.trampoline()`: Run work in a sequential and FIFO manner in one of the participating threads, usually for testing purposes.
 
-These are available on all JVM platforms but some specific platforms, such as Android, have their own typical `Scheduler`s defined: `AndroidSchedulers.mainThread()`, `SwingScheduler.instance()` or `JavaFXSchedulers.gui()`.
+These are available on all JVM platforms but some specific platforms, such as Android, have their own typical `Scheduler`s defined: `AndroidSchedulers.mainThread()`, `SwingScheduler.instance()` or `JavaFXScheduler.platform()`.
 
 In addition, there is an option to wrap an existing `Executor` (and its subtypes such as `ExecutorService`) into a `Scheduler` via `Schedulers.from(Executor)`. This can be used, for example, to have a larger but still fixed pool of threads (unlike `computation()` and `io()` respectively).
 
@@ -578,19 +583,6 @@ dependencies {
 }
 ```
 
-Snapshots before May 1st, 2021 are available via https://oss.jfrog.org/libs-snapshot/io/reactivex/rxjava3/rxjava/
-(Note that due to the Sunset of Bintray, our jfrog access has been severed, hence the new snapshot repo above.)
-
-```groovy
-repositories {
-    maven { url 'https://oss.jfrog.org/libs-snapshot' }
-}
-
-dependencies {
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0-SNAPSHOT'
-}
-```
-
 JavaDoc snapshots are available at http://reactivex.io/RxJava/3.x/javadoc/snapshot
 
 ## Build
@@ -626,5 +618,5 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[beta source link]: https://github.com/ReactiveX/RxJava/blob/3.x/src/main/java/io/reactivex/annotations/Beta.java
-[experimental source link]: https://github.com/ReactiveX/RxJava/blob/3.x/src/main/java/io/reactivex/annotations/Experimental.java
+[beta source link]: https://github.com/ReactiveX/RxJava/blob/3.x/src/main/java/io/reactivex/rxjava3/annotations/Beta.java
+[experimental source link]: https://github.com/ReactiveX/RxJava/blob/3.x/src/main/java/io/reactivex/rxjava3/annotations/Experimental.java

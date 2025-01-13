@@ -479,7 +479,7 @@ public abstract class Completable implements CompletableSource {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static Completable defer(@NonNull Supplier<? extends CompletableSource> supplier) {
+    public static Completable defer(@NonNull Supplier<? extends @NonNull CompletableSource> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new CompletableDefer(supplier));
     }
@@ -503,7 +503,7 @@ public abstract class Completable implements CompletableSource {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static Completable error(@NonNull Supplier<? extends Throwable> supplier) {
+    public static Completable error(@NonNull Supplier<? extends @NonNull Throwable> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new CompletableErrorSupplier(supplier));
     }
@@ -601,6 +601,7 @@ public abstract class Completable implements CompletableSource {
      * @param future the {@code Future} to react to
      * @return the new {@code Completable} instance
      * @throws NullPointerException if {@code future} is {@code null}
+     * @see #fromCompletionStage(CompletionStage)
      */
     @CheckReturnValue
     @NonNull
@@ -3410,7 +3411,7 @@ public abstract class Completable implements CompletableSource {
      * <img width="640" height="262" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/fromCompletionStage.c.png" alt="">
      * <p>
      * Note that the operator takes an already instantiated, running or terminated {@code CompletionStage}.
-     * If the optional is to be created per consumer upon subscription, use {@link #defer(Supplier)}
+     * If the {@code CompletionStage} is to be created per consumer upon subscription, use {@link #defer(Supplier)}
      * around {@code fromCompletionStage}:
      * <pre><code>
      * Maybe.defer(() -&gt; Completable.fromCompletionStage(createCompletionStage()));

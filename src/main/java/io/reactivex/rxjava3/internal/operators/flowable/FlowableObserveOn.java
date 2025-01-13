@@ -113,7 +113,7 @@ final Scheduler scheduler;
             if (!queue.offer(t)) {
                 upstream.cancel();
 
-                error = new MissingBackpressureException("Queue is full?!");
+                error = new QueueOverflowException();
                 done = true;
             }
             trySchedule();
@@ -244,8 +244,7 @@ final Scheduler scheduler;
         }
     }
 
-    static final class ObserveOnSubscriber<T> extends BaseObserveOnSubscriber<T>
-    implements FlowableSubscriber<T> {
+    static final class ObserveOnSubscriber<T> extends BaseObserveOnSubscriber<T> {
 
         private static final long serialVersionUID = -4547113800637756442L;
 
