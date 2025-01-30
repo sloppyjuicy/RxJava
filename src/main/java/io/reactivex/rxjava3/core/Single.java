@@ -895,7 +895,7 @@ public abstract class Single<@NonNull T> implements SingleSource<T> {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Single<T> defer(@NonNull Supplier<? extends SingleSource<? extends T>> supplier) {
+    public static <@NonNull T> Single<T> defer(@NonNull Supplier<? extends @NonNull SingleSource<? extends T>> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new SingleDefer<>(supplier));
     }
@@ -917,7 +917,7 @@ public abstract class Single<@NonNull T> implements SingleSource<T> {
     @CheckReturnValue
     @NonNull
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Single<T> error(@NonNull Supplier<? extends Throwable> supplier) {
+    public static <@NonNull T> Single<T> error(@NonNull Supplier<? extends @NonNull Throwable> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new SingleError<>(supplier));
     }
@@ -5598,7 +5598,7 @@ public abstract class Single<@NonNull T> implements SingleSource<T> {
      * <img width="640" height="262" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/fromCompletionStage.s.png" alt="">
      * <p>
      * Note that the operator takes an already instantiated, running or terminated {@code CompletionStage}.
-     * If the optional is to be created per consumer upon subscription, use {@link #defer(Supplier)}
+     * If the {@code CompletionStage} is to be created per consumer upon subscription, use {@link #defer(Supplier)}
      * around {@code fromCompletionStage}:
      * <pre><code>
      * Single.defer(() -&gt; Single.fromCompletionStage(createCompletionStage()));

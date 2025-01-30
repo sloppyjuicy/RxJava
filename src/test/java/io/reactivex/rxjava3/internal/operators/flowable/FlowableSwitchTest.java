@@ -1076,7 +1076,7 @@ public class FlowableSwitchTest extends RxJavaTest {
             }
         }), 8)
         .test(1L)
-        .assertFailure(MissingBackpressureException.class, 0);
+        .assertFailure(QueueOverflowException.class, 0);
     }
 
     @Test
@@ -1376,5 +1376,20 @@ public class FlowableSwitchTest extends RxJavaTest {
         .doFinally(() -> {
             inner.incrementAndGet();
         });
+    }
+
+    @Test
+    public void innerOnSubscribeOuterCancelRace() {
+        TestSubscriber<Integer> ts = new TestSubscriber<Integer>();
+
+        Flowable.just(1)
+        .hide()
+        .switchMap(v -> Flowable.just(1)
+                .doOnSubscribe(d -> ts.cancel())
+                .scan(1, (a, b) -> a)
+        )
+        .subscribe(ts);
+
+        ts.assertEmpty();
     }
 }

@@ -2040,7 +2040,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @NonNull
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Flowable<T> defer(@NonNull Supplier<? extends Publisher<? extends T>> supplier) {
+    public static <@NonNull T> Flowable<T> defer(@NonNull Supplier<? extends @NonNull Publisher<? extends T>> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new FlowableDefer<>(supplier));
     }
@@ -2095,7 +2095,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @NonNull
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public static <@NonNull T> Flowable<T> error(@NonNull Supplier<? extends Throwable> supplier) {
+    public static <@NonNull T> Flowable<T> error(@NonNull Supplier<? extends @NonNull Throwable> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return RxJavaPlugins.onAssembly(new FlowableError<>(supplier));
     }
@@ -7475,8 +7475,10 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     }
 
     /**
-     * Returns a {@code Flowable} that emits the items emitted by the current {@code Flowable}, converted to the specified
-     * type.
+     * Returns a {@code Flowable} that emits the upstream items while
+     * they can be cast via {@link Class#cast(Object)} until the upstream terminates,
+     * or until the upstream signals an item which can't be cast,
+     * resulting in a {@link ClassCastException} to be signaled to the downstream.
      * <p>
      * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/cast.v3.png" alt="">
      * <dl>
@@ -7489,8 +7491,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      *
      * @param <U> the output value type cast to
      * @param clazz
-     *            the target class type that {@code cast} will cast the items emitted by the current {@code Flowable}
-     *            into before emitting them from the resulting {@code Flowable}
+     *            the target class to use to try and cast the upstream items into
      * @return the new {@code Flowable} instance
      * @throws NullPointerException if {@code clazz} is {@code null}
      * @see <a href="http://reactivex.io/documentation/operators/map.html">ReactiveX operators documentation: Map</a>
@@ -8265,7 +8266,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds or completes, emits their success value if available or terminates immediately if
      * either this {@code Flowable} or the current inner {@code MaybeSource} fail.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapMaybe.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8298,7 +8299,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds or completes, emits their success value if available or terminates immediately if
      * either this {@code Flowable} or the current inner {@code MaybeSource} fail.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapMaybe.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8338,7 +8339,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other terminates, emits their success value if available and delaying all errors
      * till both this {@code Flowable} and all inner {@code MaybeSource}s terminate.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapMaybeDelayError.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8371,7 +8372,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other terminates, emits their success value if available and optionally delaying all errors
      * till both this {@code Flowable} and all inner {@code MaybeSource}s terminate.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapMaybeDelayError.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8410,7 +8411,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other terminates, emits their success value if available and optionally delaying all errors
      * till both this {@code Flowable} and all inner {@code MaybeSource}s terminate.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapMaybeDelayError.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8455,7 +8456,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds, emits their success values or terminates immediately if
      * either this {@code Flowable} or the current inner {@code SingleSource} fail.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapSingle.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8488,7 +8489,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds, emits their success values or terminates immediately if
      * either this {@code Flowable} or the current inner {@code SingleSource} fail.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapSingle.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8528,7 +8529,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds or fails, emits their success values and delays all errors
      * till both this {@code Flowable} and all inner {@code SingleSource}s terminate.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapSingleDelayError.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8561,7 +8562,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds or fails, emits their success values and optionally delays all errors
      * till both this {@code Flowable} and all inner {@code SingleSource}s terminate.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapSingleDelayError.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8600,7 +8601,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * other succeeds or fails, emits their success values and optionally delays errors
      * till both this {@code Flowable} and all inner {@code SingleSource}s terminate.
      * <p>
-     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMap.v3.png" alt="">
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/concatMapSingleDelayError.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator expects the upstream to support backpressure and honors
@@ -8930,7 +8931,59 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     public final Flowable<T> debounce(long timeout, @NonNull TimeUnit unit, @NonNull Scheduler scheduler) {
         Objects.requireNonNull(unit, "unit is null");
         Objects.requireNonNull(scheduler, "scheduler is null");
-        return RxJavaPlugins.onAssembly(new FlowableDebounceTimed<>(this, timeout, unit, scheduler));
+        return RxJavaPlugins.onAssembly(new FlowableDebounceTimed<>(this, timeout, unit, scheduler, null));
+    }
+
+    /**
+     * Returns a {@code Flowable} that mirrors the current {@code Flowable}, except that it drops items emitted by the
+     * current {@code Flowable} that are followed by newer items before a timeout value expires on a specified
+     * {@link Scheduler}. The timer resets on each emission.
+     * <p>
+     * <em>Note:</em> If items keep being emitted by the current {@code Flowable} faster than the timeout then no items
+     * will be emitted by the resulting {@code Flowable}.
+     * <p>
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/debounce.s.v3.png" alt="">
+     * <p>
+     * Delivery of the item after the grace period happens on the given {@code Scheduler}'s
+     * {@code Worker} which if takes too long, a newer item may arrive from the upstream, causing the
+     * {@code Worker}'s task to get disposed, which may also interrupt any downstream blocking operation
+     * (yielding an {@code InterruptedException}). It is recommended processing items
+     * that may take long time to be moved to another thread via {@link #observeOn} applied after
+     * {@code debounce} itself.
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>This operator does not support backpressure as it uses time to control data flow.</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>You specify which {@code Scheduler} this operator will use.</dd>
+     * </dl>
+     *
+     * @param timeout
+     *            the time each item has to be "the most recent" of those emitted by the current {@code Flowable} to
+     *            ensure that it's not dropped
+     * @param unit
+     *            the unit of time for the specified {@code timeout}
+     * @param scheduler
+     *            the {@code Scheduler} to use internally to manage the timers that handle the timeout for each
+     *            item
+     * @param onDropped
+     *            called with the current entry when it has been replaced by a new one
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code unit} or {@code scheduler} is {@code null} or {@code onDropped} is {@code null}
+     * @see <a href="http://reactivex.io/documentation/operators/debounce.html">ReactiveX operators documentation: Debounce</a>
+     * @see <a href="https://github.com/ReactiveX/RxJava/wiki/Backpressure">RxJava wiki: Backpressure</a>
+     * @see #throttleWithTimeout(long, TimeUnit, Scheduler, Consumer)
+     * @since 3.1.6 - Experimental
+     */
+    @CheckReturnValue
+    @NonNull
+    @BackpressureSupport(BackpressureKind.ERROR)
+    @SchedulerSupport(SchedulerSupport.CUSTOM)
+    @Experimental
+    public final Flowable<T> debounce(long timeout, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, @NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(unit, "unit is null");
+        Objects.requireNonNull(scheduler, "scheduler is null");
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        return RxJavaPlugins.onAssembly(new FlowableDebounceTimed<>(this, timeout, unit, scheduler, onDropped));
     }
 
     /**
@@ -10148,7 +10201,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * Returns a {@link Single} that emits only the very first item emitted by this {@code Flowable}, or a default
      * item if this {@code Flowable} completes without emitting anything.
      * <p>
-     * <img width="640" height="285" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/first.s.png" alt="">
+     * <img width="640" height="298" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/Flowable.first.s.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator honors backpressure from downstream and consumes the current {@code Flowable} in a bounded manner.</dd>
@@ -10904,6 +10957,8 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     /**
      * Maps each element of the upstream {@code Flowable} into {@link MaybeSource}s, subscribes to all of them
      * and merges their {@code onSuccess} values, in no particular order, into a single {@code Flowable} sequence.
+     * <p>
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/flatMapMaybe.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator consumes the upstream in an unbounded manner.</dd>
@@ -10927,6 +10982,8 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * Maps each element of the upstream {@code Flowable} into {@link MaybeSource}s, subscribes to at most
      * {@code maxConcurrency} {@code MaybeSource}s at a time and merges their {@code onSuccess} values,
      * in no particular order, into a single {@code Flowable} sequence, optionally delaying all errors.
+     * <p>
+     * <img width="640" height="310" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/flatMapMaybe.v3.png" alt="">
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>If {@code maxConcurrency == }{@link Integer#MAX_VALUE} the operator consumes the upstream in an unbounded manner.
@@ -12494,7 +12551,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @NonNull
     public final Flowable<T> onBackpressureBuffer(int capacity, boolean delayError, boolean unbounded) {
         ObjectHelper.verifyPositive(capacity, "capacity");
-        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBuffer<>(this, capacity, unbounded, delayError, Functions.EMPTY_ACTION));
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBuffer<>(this, capacity, unbounded, delayError, Functions.EMPTY_ACTION, Functions.emptyConsumer()));
     }
 
     /**
@@ -12525,6 +12582,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * @throws NullPointerException if {@code onOverflow} is {@code null}
      * @throws IllegalArgumentException if {@code capacity} is non-positive
      * @see <a href="http://reactivex.io/documentation/operators/backpressure.html">ReactiveX operators documentation: backpressure operators</a>
+     * @see #onBackpressureBuffer(int, boolean, boolean, Action, Consumer)
      * @since 1.1.0
      */
     @CheckReturnValue
@@ -12535,7 +12593,51 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
             @NonNull Action onOverflow) {
         Objects.requireNonNull(onOverflow, "onOverflow is null");
         ObjectHelper.verifyPositive(capacity, "capacity");
-        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBuffer<>(this, capacity, unbounded, delayError, onOverflow));
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBuffer<>(this, capacity, unbounded, delayError, onOverflow, Functions.emptyConsumer()));
+    }
+
+    /**
+     * Buffers an optionally unlimited number of items from the current {@code Flowable} and allows it to emit as fast it can while allowing the
+     * downstream to consume the items at its own place.
+     * If {@code unbounded} is {@code true}, the resulting {@code Flowable} will signal a
+     * {@link MissingBackpressureException} via {@code onError} as soon as the buffer's capacity is exceeded, dropping all undelivered
+     * items, canceling the flow and calling the {@code onOverflow} action.
+     * <p>
+     * <img width="640" height="300" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/bp.obp.buffer.v3.png" alt="">
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>The operator honors backpressure from downstream and consumes the current {@code Flowable} in an unbounded
+     *  manner (i.e., not applying backpressure to it).</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>{@code onBackpressureBuffer} does not operate by default on a particular {@link Scheduler}.</dd>
+     * </dl>
+     *
+     * @param capacity number of slots available in the buffer.
+     * @param delayError
+     *                if {@code true}, an exception from the current {@code Flowable} is delayed until all buffered elements have been
+     *                consumed by the downstream; if {@code false}, an exception is immediately signaled to the downstream, skipping
+     *                any buffered element
+     * @param unbounded
+     *                if {@code true}, the capacity value is interpreted as the internal "island" size of the unbounded buffer
+     * @param onOverflow action to execute if an item needs to be buffered, but there are no available slots.
+     * @param onDropped the {@link Consumer} to be called with the item that could not be buffered due to capacity constraints.
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code onOverflow} or {@code onDropped} is {@code null}
+     * @throws IllegalArgumentException if {@code capacity} is non-positive
+     * @see <a href="http://reactivex.io/documentation/operators/backpressure.html">ReactiveX operators documentation: backpressure operators</a>
+     * @since 3.1.7
+     */
+    @CheckReturnValue
+    @NonNull
+    @BackpressureSupport(BackpressureKind.SPECIAL)
+    @SchedulerSupport(SchedulerSupport.NONE)
+    @Experimental
+    public final Flowable<T> onBackpressureBuffer(int capacity, boolean delayError, boolean unbounded,
+            @NonNull Action onOverflow, @NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(onOverflow, "onOverflow is null");
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        ObjectHelper.verifyPositive(capacity, "capacity");
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBuffer<>(this, capacity, unbounded, delayError, onOverflow, onDropped));
     }
 
     /**
@@ -12601,6 +12703,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * @throws NullPointerException if {@code onOverflow} or {@code overflowStrategy} is {@code null}
      * @throws IllegalArgumentException if {@code capacity} is non-positive
      * @see <a href="http://reactivex.io/documentation/operators/backpressure.html">ReactiveX operators documentation: backpressure operators</a>
+     * @see #onBackpressureBuffer(long, Action, BackpressureOverflowStrategy)
      * @since 2.0
      */
     @CheckReturnValue
@@ -12610,9 +12713,55 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     public final Flowable<T> onBackpressureBuffer(long capacity, @Nullable Action onOverflow, @NonNull BackpressureOverflowStrategy overflowStrategy) {
         Objects.requireNonNull(overflowStrategy, "overflowStrategy is null");
         ObjectHelper.verifyPositive(capacity, "capacity");
-        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBufferStrategy<>(this, capacity, onOverflow, overflowStrategy));
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBufferStrategy<>(this, capacity, onOverflow, overflowStrategy, null));
     }
 
+    /**
+     * Buffers an optionally unlimited number of items from the current {@code Flowable} and allows it to emit as fast it can while allowing the
+     * downstream to consume the items at its own place.
+     * The resulting {@code Flowable} will behave as determined by {@code overflowStrategy} if the buffer capacity is exceeded:
+     * <ul>
+     *     <li>{@link BackpressureOverflowStrategy#ERROR} (default) will call {@code onError} dropping all undelivered items,
+     *     canceling the source, and notifying the producer with {@code onOverflow}. </li>
+     *     <li>{@link BackpressureOverflowStrategy#DROP_LATEST} will drop any new items emitted by the producer while
+     *     the buffer is full, without generating any {@code onError}.  Each drop will, however, invoke {@code onOverflow}
+     *     to signal the overflow to the producer.</li>
+     *     <li>{@link BackpressureOverflowStrategy#DROP_OLDEST} will drop the oldest items in the buffer in order to make
+     *     room for newly emitted ones. Overflow will not generate an {@code onError}, but each drop will invoke
+     *     {@code onOverflow} to signal the overflow to the producer.</li>
+     * </ul>
+     *
+     * <p>
+     * <img width="640" height="300" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/bp.obp.buffer.v3.png" alt="">
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>The operator honors backpressure from downstream and consumes the current {@code Flowable} in an unbounded
+     *  manner (i.e., not applying backpressure to it).</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>{@code onBackpressureBuffer} does not operate by default on a particular {@link Scheduler}.</dd>
+     * </dl>
+     *
+     * @param capacity number of slots available in the buffer.
+     * @param onOverflow action to execute if an item needs to be buffered, but there are no available slots, {@code null} is allowed.
+     * @param overflowStrategy how should the resulting {@code Flowable} react to buffer overflows, {@code null} is not allowed.
+     * @param onDropped the {@link Consumer} to be called with the item that could not be buffered due to capacity constraints.
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code onOverflow}, {@code overflowStrategy} or {@code onDropped} is {@code null}
+     * @throws IllegalArgumentException if {@code capacity} is non-positive
+     * @see <a href="http://reactivex.io/documentation/operators/backpressure.html">ReactiveX operators documentation: backpressure operators</a>
+     * @since 3.1.7
+     */
+    @CheckReturnValue
+    @NonNull
+    @BackpressureSupport(BackpressureKind.SPECIAL)
+    @SchedulerSupport(SchedulerSupport.NONE)
+    @Experimental
+    public final Flowable<T> onBackpressureBuffer(long capacity, @Nullable Action onOverflow, @NonNull BackpressureOverflowStrategy overflowStrategy, @NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(overflowStrategy, "overflowStrategy is null");
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        ObjectHelper.verifyPositive(capacity, "capacity");
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureBufferStrategy<>(this, capacity, onOverflow, overflowStrategy, onDropped));
+    }
     /**
      * Drops items from the current {@code Flowable} if the downstream is not ready to receive new items (indicated
      * by a lack of {@link Subscription#request(long)} calls from it).
@@ -12703,7 +12852,46 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @SchedulerSupport(SchedulerSupport.NONE)
     @NonNull
     public final Flowable<T> onBackpressureLatest() {
-        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureLatest<>(this));
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureLatest<>(this, null));
+    }
+
+    /**
+     * Drops all but the latest item emitted by the current {@code Flowable} if the downstream is not ready to receive
+     * new items (indicated by a lack of {@link Subscription#request(long)} calls from it) and emits this latest
+     * item when the downstream becomes ready.
+     * <p>
+     * <img width="640" height="245" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/bp.obp.latest.v3.png" alt="">
+     * <p>
+     * Its behavior is logically equivalent to {@code blockingLatest()} with the exception that
+     * the downstream is not blocking while requesting more values.
+     * <p>
+     * Note that if the current {@code Flowable} does support backpressure, this operator ignores that capability
+     * and doesn't propagate any backpressure requests from downstream.
+     * <p>
+     * Note that due to the nature of how backpressure requests are propagated through subscribeOn/observeOn,
+     * requesting more than 1 from downstream doesn't guarantee a continuous delivery of {@code onNext} events.
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>The operator honors backpressure from downstream and consumes the current {@code Flowable} in an unbounded
+     *  manner (i.e., not applying backpressure to it).</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>{@code onBackpressureLatest} does not operate by default on a particular {@link Scheduler}.</dd>
+     * </dl>
+     *
+     * @param onDropped
+     *        called with the current entry when it has been replaced by a new one
+     * @throws NullPointerException if {@code onDropped} is {@code null}
+     * @return the new {@code Flowable} instance
+     * @since 3.1.7
+     */
+    @CheckReturnValue
+    @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
+    @SchedulerSupport(SchedulerSupport.NONE)
+    @NonNull
+    @Experimental
+     public final Flowable<T> onBackpressureLatest(@NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        return RxJavaPlugins.onAssembly(new FlowableOnBackpressureLatest<>(this, onDropped));
     }
 
     /**
@@ -14672,7 +14860,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     public final Flowable<T> sample(long period, @NonNull TimeUnit unit, @NonNull Scheduler scheduler) {
         Objects.requireNonNull(unit, "unit is null");
         Objects.requireNonNull(scheduler, "scheduler is null");
-        return RxJavaPlugins.onAssembly(new FlowableSampleTimed<>(this, period, unit, scheduler, false));
+        return RxJavaPlugins.onAssembly(new FlowableSampleTimed<>(this, period, unit, scheduler, false, null));
     }
 
     /**
@@ -14713,7 +14901,51 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     public final Flowable<T> sample(long period, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, boolean emitLast) {
         Objects.requireNonNull(unit, "unit is null");
         Objects.requireNonNull(scheduler, "scheduler is null");
-        return RxJavaPlugins.onAssembly(new FlowableSampleTimed<>(this, period, unit, scheduler, emitLast));
+        return RxJavaPlugins.onAssembly(new FlowableSampleTimed<>(this, period, unit, scheduler, emitLast, null));
+    }
+
+    /**
+     * Returns a {@code Flowable} that emits the most recently emitted item (if any) emitted by the current {@code Flowable}
+     * within periodic time intervals, where the intervals are defined on a particular {@link Scheduler}
+     * and optionally emit the very last upstream item when the upstream completes.
+     * <p>
+     * <img width="640" height="277" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/sample.s.emitlast.png" alt="">
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>This operator does not support backpressure as it uses time to control data flow.</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>You specify which {@code Scheduler} this operator will use.</dd>
+     * </dl>
+     *
+     * @param period
+     *            the sampling rate
+     * @param unit
+     *            the {@link TimeUnit} in which {@code period} is defined
+     * @param scheduler
+     *            the {@code Scheduler} to use when sampling
+     * @param emitLast
+     *            if {@code true} and the upstream completes while there is still an unsampled item available,
+     *            that item is emitted to downstream before completion
+     *            if {@code false}, an unsampled last item is ignored.
+     * @param onDropped
+     *            called with the current entry when it has been replaced by a new one
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code unit} or {@code scheduler} is {@code null} or {@code onDropped} is {@code null}
+     * @see <a href="http://reactivex.io/documentation/operators/sample.html">ReactiveX operators documentation: Sample</a>
+     * @see <a href="https://github.com/ReactiveX/RxJava/wiki/Backpressure">RxJava wiki: Backpressure</a>
+     * @see #throttleLast(long, TimeUnit, Scheduler)
+     * @since 3.1.6 - Experimental
+     */
+    @CheckReturnValue
+    @NonNull
+    @BackpressureSupport(BackpressureKind.ERROR)
+    @SchedulerSupport(SchedulerSupport.CUSTOM)
+    @Experimental
+    public final Flowable<T> sample(long period, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, boolean emitLast, @NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(unit, "unit is null");
+        Objects.requireNonNull(scheduler, "scheduler is null");
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        return RxJavaPlugins.onAssembly(new FlowableSampleTimed<>(this, period, unit, scheduler, emitLast, onDropped));
     }
 
     /**
@@ -15816,7 +16048,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * terminates or this particular {@code Disposable} is disposed, the {@code Subscriber} is removed
      * from the given container.
      * <p>
-     * The {@coded Subscriber} will be removed after the callback for the terminal event has been invoked.
+     * The {@code Subscriber} will be removed after the callback for the terminal event has been invoked.
      * <dl>
      *  <dt><b>Backpressure:</b></dt>
      *  <dd>The operator consumes the current {@code Flowable} in an unbounded manner (i.e., no
@@ -17096,7 +17328,50 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     public final Flowable<T> throttleFirst(long skipDuration, @NonNull TimeUnit unit, @NonNull Scheduler scheduler) {
         Objects.requireNonNull(unit, "unit is null");
         Objects.requireNonNull(scheduler, "scheduler is null");
-        return RxJavaPlugins.onAssembly(new FlowableThrottleFirstTimed<>(this, skipDuration, unit, scheduler));
+        return RxJavaPlugins.onAssembly(new FlowableThrottleFirstTimed<>(this, skipDuration, unit, scheduler, null));
+    }
+
+    /**
+     * Returns a {@code Flowable} that emits only the first item emitted by the current {@code Flowable} during sequential
+     * time windows of a specified duration, where the windows are managed by a specified {@link Scheduler}.
+     * <p>
+     * This differs from {@link #throttleLast} in that this only tracks the passage of time whereas
+     * {@link #throttleLast} ticks at scheduled intervals.
+     * <p>
+     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/throttleFirst.s.v3.png" alt="">
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>This operator does not support backpressure as it uses time to control data flow.</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>You specify which {@code Scheduler} this operator will use.</dd>
+     * </dl>
+     *
+     * @param skipDuration
+     *            time to wait before emitting another item after emitting the last item
+     * @param unit
+     *            the unit of time of {@code skipDuration}
+     * @param scheduler
+     *            the {@code Scheduler} to use internally to manage the timers that handle timeout for each
+     *            event
+     * @param onDropped
+     *            called when an item doesn't get delivered to the downstream
+     *
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code unit} or {@code scheduler} or {@code onDropped} is {@code null}
+     * @see <a href="http://reactivex.io/documentation/operators/sample.html">ReactiveX operators documentation: Sample</a>
+     * @see <a href="https://github.com/ReactiveX/RxJava/wiki/Backpressure">RxJava wiki: Backpressure</a>
+     * @since 3.1.6 - Experimental
+     */
+    @CheckReturnValue
+    @NonNull
+    @BackpressureSupport(BackpressureKind.ERROR)
+    @SchedulerSupport(SchedulerSupport.CUSTOM)
+    @Experimental
+    public final Flowable<T> throttleFirst(long skipDuration, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, @NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(unit, "unit is null");
+        Objects.requireNonNull(scheduler, "scheduler is null");
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        return RxJavaPlugins.onAssembly(new FlowableThrottleFirstTimed<>(this, skipDuration, unit, scheduler, onDropped));
     }
 
     /**
@@ -17168,6 +17443,47 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @NonNull
     public final Flowable<T> throttleLast(long intervalDuration, @NonNull TimeUnit unit, @NonNull Scheduler scheduler) {
         return sample(intervalDuration, unit, scheduler);
+    }
+
+    /**
+     * Returns a {@code Flowable} that emits only the last item emitted by the current {@code Flowable} during sequential
+     * time windows of a specified duration, where the duration is governed by a specified {@link Scheduler}.
+     * <p>
+     * This differs from {@link #throttleFirst(long, TimeUnit, Scheduler)} in that this ticks along at a scheduled interval whereas
+     * {@code throttleFirst} does not tick, it just tracks the passage of time.
+     * <p>
+     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/throttleLast.s.v3.png" alt="">
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>This operator does not support backpressure as it uses time to control data flow.</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>You specify which {@code Scheduler} this operator will use.</dd>
+     * </dl>
+     *
+     * @param intervalDuration
+     *            duration of windows within which the last item emitted by the current {@code Flowable} will be
+     *            emitted
+     * @param unit
+     *            the unit of time of {@code intervalDuration}
+     * @param scheduler
+     *            the {@code Scheduler} to use internally to manage the timers that handle timeout for each
+     *            event
+     * @param onDropped
+     *          called with the current entry when it has been replaced by a new one
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code unit} or {@code scheduler} is {@code null} or {@code onDropped} is {@code null}
+     * @see <a href="http://reactivex.io/documentation/operators/sample.html">ReactiveX operators documentation: Sample</a>
+     * @see <a href="https://github.com/ReactiveX/RxJava/wiki/Backpressure">RxJava wiki: Backpressure</a>
+     * @see #sample(long, TimeUnit, Scheduler)
+     * @since 3.1.6 - Experimental
+     */
+    @CheckReturnValue
+    @BackpressureSupport(BackpressureKind.ERROR)
+    @SchedulerSupport(SchedulerSupport.CUSTOM)
+    @NonNull
+    @Experimental
+    public final Flowable<T> throttleLast(long intervalDuration, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, @NonNull Consumer<? super T> onDropped) {
+        return sample(intervalDuration, unit, scheduler, false, onDropped);
     }
 
     /**
@@ -17327,7 +17643,61 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     public final Flowable<T> throttleLatest(long timeout, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, boolean emitLast) {
         Objects.requireNonNull(unit, "unit is null");
         Objects.requireNonNull(scheduler, "scheduler is null");
-        return RxJavaPlugins.onAssembly(new FlowableThrottleLatest<>(this, timeout, unit, scheduler, emitLast));
+        return RxJavaPlugins.onAssembly(new FlowableThrottleLatest<>(this, timeout, unit, scheduler, emitLast, null));
+    }
+
+    /**
+     * Throttles items from the upstream {@code Flowable} by first emitting the next
+     * item from upstream, then periodically emitting the latest item (if any) when
+     * the specified timeout elapses between them, invoking the consumer for any dropped item.
+     * <p>
+     * <img width="640" height="326" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/throttleLatest.se.png" alt="">
+     * <p>
+     * If no items were emitted from the upstream during this timeout phase, the next
+     * upstream item is emitted immediately and the timeout window starts from then.
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>This operator does not support backpressure as it uses time to control data flow.
+     *  If the downstream is not ready to receive items, a
+     *  {@link io.reactivex.rxjava3.exceptions.MissingBackpressureException MissingBackpressureException}
+     *  will be signaled.</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>You specify which {@link Scheduler} this operator will use.</dd>
+     *  <dt><b>Error handling:</b></dt>
+     *  <dd>
+     *  If the upstream signals an {@code onError} or {@code onDropped} callback crashes,
+     *  the error is delivered immediately to the downstream. If both happen, a {@link CompositeException}
+     *  is created, containing both the upstream and the callback error.
+     *  If the {@code onDropped} callback crashes during cancellation, the exception is forwarded
+     *  to the global error handler via {@link RxJavaPlugins#onError(Throwable)}.
+     *  </dd>
+     * </dl>
+     * @param timeout the time to wait after an item emission towards the downstream
+     *                before trying to emit the latest item from upstream again
+     * @param unit    the time unit
+     * @param scheduler the {@code Scheduler} where the timed wait and latest item
+     *                  emission will be performed
+     * @param emitLast If {@code true}, the very last item from the upstream will be emitted
+     *                 immediately when the upstream completes, regardless if there is
+     *                 a timeout window active or not. If {@code false}, the very last
+     *                 upstream item is ignored and the flow terminates.
+     * @param onDropped called when an item is replaced by a newer item that doesn't get delivered
+     *                 to the downstream, including the very last item if {@code emitLast} is {@code false}
+     *                 and the current undelivered item when the sequence gets canceled.
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code unit}, {@code scheduler} or {@code onDropped} is {@code null}
+     * @since 3.1.6 - Experimental
+     */
+    @CheckReturnValue
+    @NonNull
+    @BackpressureSupport(BackpressureKind.ERROR)
+    @SchedulerSupport(SchedulerSupport.CUSTOM)
+    @Experimental
+    public final Flowable<T> throttleLatest(long timeout, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, boolean emitLast, @NonNull Consumer<? super T> onDropped) {
+        Objects.requireNonNull(unit, "unit is null");
+        Objects.requireNonNull(scheduler, "scheduler is null");
+        Objects.requireNonNull(onDropped, "onDropped is null");
+        return RxJavaPlugins.onAssembly(new FlowableThrottleLatest<>(this, timeout, unit, scheduler, emitLast, onDropped));
     }
 
     /**
@@ -17403,6 +17773,49 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @NonNull
     public final Flowable<T> throttleWithTimeout(long timeout, @NonNull TimeUnit unit, @NonNull Scheduler scheduler) {
         return debounce(timeout, unit, scheduler);
+    }
+
+    /**
+     * Returns a {@code Flowable} that mirrors the current {@code Flowable}, except that it drops items emitted by the
+     * current {@code Flowable} that are followed by newer items before a timeout value expires on a specified
+     * {@link Scheduler}. The timer resets on each emission (alias to {@link #debounce(long, TimeUnit, Scheduler, Consumer)}).
+     * <p>
+     * <em>Note:</em> If items keep being emitted by the current {@code Flowable} faster than the timeout then no items
+     * will be emitted by the resulting {@code Flowable}.
+     * <p>
+     * <img width="640" height="305" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/throttleWithTimeout.s.v3.png" alt="">
+     * <dl>
+     *  <dt><b>Backpressure:</b></dt>
+     *  <dd>This operator does not support backpressure as it uses time to control data flow.</dd>
+     *  <dt><b>Scheduler:</b></dt>
+     *  <dd>You specify which {@code Scheduler} this operator will use.</dd>
+     * </dl>
+     *
+     * @param timeout
+     *            the length of the window of time that must pass after the emission of an item from the current
+     *            {@code Flowable} in which it emits no items in order for the item to be emitted by the
+     *            resulting {@code Flowable}
+     * @param unit
+     *            the unit of time for the specified {@code timeout}
+     * @param scheduler
+     *            the {@code Scheduler} to use internally to manage the timers that handle the timeout for each
+     *            item
+     * @param onDropped
+     *            called with the current entry when it has been replaced by a new one
+     * @return the new {@code Flowable} instance
+     * @throws NullPointerException if {@code unit} or {@code scheduler} is {@code null} or {@code onDropped} is {@code null}
+     * @see <a href="http://reactivex.io/documentation/operators/debounce.html">ReactiveX operators documentation: Debounce</a>
+     * @see <a href="https://github.com/ReactiveX/RxJava/wiki/Backpressure">RxJava wiki: Backpressure</a>
+     * @see #debounce(long, TimeUnit, Scheduler, Consumer)
+     * @since 3.1.6 - Experimental
+     */
+    @CheckReturnValue
+    @BackpressureSupport(BackpressureKind.ERROR)
+    @SchedulerSupport(SchedulerSupport.CUSTOM)
+    @NonNull
+    @Experimental
+    public final Flowable<T> throttleWithTimeout(long timeout, @NonNull TimeUnit unit, @NonNull Scheduler scheduler, @NonNull Consumer<? super T> onDropped) {
+        return debounce(timeout, unit, scheduler, onDropped);
     }
 
     /**
@@ -19851,7 +20264,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
      * <img width="640" height="262" src="https://raw.github.com/wiki/ReactiveX/RxJava/images/rx-operators/fromCompletionStage.f.png" alt="">
      * <p>
      * Note that the operator takes an already instantiated, running or terminated {@code CompletionStage}.
-     * If the optional is to be created per consumer upon subscription, use {@link #defer(Supplier)}
+     * If the {@code CompletionStage} is to be created per consumer upon subscription, use {@link #defer(Supplier)}
      * around {@code fromCompletionStage}:
      * <pre><code>
      * Flowable.defer(() -&gt; Flowable.fromCompletionStage(createCompletionStage()));
@@ -19986,7 +20399,7 @@ public abstract class Flowable<@NonNull T> implements Publisher<T> {
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     @NonNull
-    public final <@NonNull R, @NonNull A> Single<R> collect(@NonNull Collector<? super T, A, R> collector) {
+    public final <@NonNull R, @Nullable A> Single<R> collect(@NonNull Collector<? super T, A, R> collector) {
         Objects.requireNonNull(collector, "collector is null");
         return RxJavaPlugins.onAssembly(new FlowableCollectWithCollectorSingle<>(this, collector));
     }
